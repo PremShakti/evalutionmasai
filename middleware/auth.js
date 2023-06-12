@@ -10,6 +10,7 @@ const auth=(req,res,next)=>{
             const oktoken=jwt.verify(token,process.env.JWTSECRET)
 
             if(oktoken){
+                
                 next()
             }else{
                 res.json({message:"wrong token"})

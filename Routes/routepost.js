@@ -18,7 +18,7 @@ PostRopute.post("/add",auth, async(req,res)=>{
 })
 
 
-PostRopute.get("/",auth, async(req,res)=>{
+PostRopute.get("/", async(req,res)=>{
 const page= parseInt(req.query.page)||1
 limit=3
 const skip=(page-1)*limit
@@ -35,7 +35,7 @@ const device = req.query.device
 
 
 
-PostRopute.get("/top",auth, async(req,res)=>{
+PostRopute.get("/top", async(req,res)=>{
     const page= parseInt(req.query.page)||1
     const device = req.query.device
     limit=3
@@ -50,32 +50,30 @@ PostRopute.get("/top",auth, async(req,res)=>{
             res.status(400).json({message:error.message})
         }
     })
-    PostRopute.post("/update",auth, async(req,res)=>{
-        const page= parseInt(req.query.page)||1
-        const device = req.query.device
-        limit=3
-        const skip=(page-1)*limit
+    PostRopute.post("/update/:id",auth, async(req,res)=>{
         
+           
+        const {id}=req.params
             try {
-                let newpost= await PostModel.find({device}).sort({no_of_comments:1}).skip(skip).limit(limit)
+              
+                
+
+                await PostModel.findByIdAndUpdate({_id:id},req.body)
         
-                res.status(200).json(newpost)
+                res.status(200).json({message:"update success"})
         
             } catch (error) {
                 res.status(400).json({message:error.message})
             }
         })
 
-        PostRopute.post("/delete",auth, async(req,res)=>{
-            const page= parseInt(req.query.page)||1
-            const device = req.query.device
-            limit=3
-            const skip=(page-1)*limit
+        PostRopute.post("/delete/:id",auth, async(req,res)=>{
+            const {id}=req.params
             
                 try {
-                    let newpost= await PostModel.find({device}).sort({no_of_comments:1}).skip(skip).limit(limit)
+                     await PostModel.findByIdAndDelete({_id:id})
             
-                    res.status(200).json(newpost)
+                    res.status(200).json({message:"delete success"})
             
                 } catch (error) {
                     res.status(400).json({message:error.message})
