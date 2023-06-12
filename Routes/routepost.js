@@ -24,7 +24,7 @@ limit=3
 const skip=(page-1)*limit
 const device = req.query.device
     try {
-        let newpost= await PostModel.find({device}).sort().skip(skip).limit(limit)
+        let newpost= await PostModel.find(device).sort().skip(skip).limit(limit)
 
         res.status(200).json(newpost)
 
