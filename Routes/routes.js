@@ -1,12 +1,13 @@
 const express=require('express')
-const {UsersModel,PostModel}=require('../userModel/Usermodel.js')
-const Routes=express.Router()
+const {UsersModel}=require("../userModel/Usermodel")
 const bcrypt=require('bcrypt')
 const jwt=require('jsonwebtoken')
 require('dotenv').config()
+const Routes=express.Router()
 
 
-Routes.post('/register ',async(req,res)=>{
+Routes.post('/register',async(req,res)=>{
+    console.log(req.body)
     const {name, email,password,gender,age,city,is_married}=req.body
     try {
         let existUser= await UsersModel.findOne({email})
@@ -16,18 +17,24 @@ Routes.post('/register ',async(req,res)=>{
 let hashpass=await bcrypt.hash(password,5)
 
 const newuser=new UsersModel({
-    name,email,gender,password:hashpass,age,city,is_married,
+    name:name,
+    email:email,
+    gender:gender,
+    password:hashpass,
+    age:age,
+    city:city,
+    is_married:is_married
 })
 
 await newuser.save()
 
-res.status(200).json({message:"user registred successfully."})
+ return res.status(200).json({message:"user registred successfully."})
 
         }
 
 
     } catch (error) {
-        res.status(400).json({message:error.message})
+       return res.status(400).json({message:error.message})
     }
 })
 
@@ -54,6 +61,11 @@ const {email,password}=req.body
         res.status(400).json({message:error.message})
     }
 })
+
+
+
+
+
 
 
 

@@ -3,12 +3,14 @@ require('dotenv').config()
 const {Routes}=require('./Routes/routes')
 const {connect}=require('./db')
 const cors=require('cors')
+const { PostRopute } = require('./Routes/routepost')
 let app=express()
 let PORT=process.env.PORT
-app.use(cors())
 app.use(express.json())
+app.use(cors())
 
-app.use("users",Routes)
+app.use("/users",Routes)
+app.use("/posts",PostRopute)
 
 
 
