@@ -40,22 +40,26 @@ await newuser.save()
 
 Routes.post("/login",async(req,res)=>{
 
-const {email,password}=req.body
 
     try {
-        const user=await UsersModel.findOne({email})
-        if(!user){
-            res.status(400).json({message:"Invalid credentials"})
+        const { email, password } = req.body
+   
 
+        let User = await UsersModel.findOne({ email })
+        
+        if (!User) {
+            res.status(400).json({ message: 'user is not exist' })
+        } else {
+              bcrypt.compare(password, User.password,(err,result)=>{
+                if (err) {
+                    res.status(400).json({ message: 'password is incorect' })
+                } else {
+                    let token = jwt.sign({ userID:User._id }, process.env.JWTSECRET)
+                    res.status(200).json({ message: 'Login successfull', token: token })
+                }
+            })
+          
         }
-
-        const pass=await bcrypt.compare(password,user.password)
-        if(!pass){
-            res.status(400).json({message:"Invalid credentials"})
-        }
-
-        const token= jwt.sign({userId:user._id},process.env.JWTSECRET)
-        res.status(200).json({message:"login success",token:token})
 
     } catch (error) {
         res.status(400).json({message:error.message})

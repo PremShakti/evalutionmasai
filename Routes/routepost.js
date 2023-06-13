@@ -7,6 +7,7 @@ require('dotenv').config()
 const PostRopute=express.Router()
 
 PostRopute.post("/add",auth, async(req,res)=>{
+   
 
     try {
         let newpost= new PostModel(req.body)
@@ -50,34 +51,47 @@ PostRopute.get("/top", async(req,res)=>{
             res.status(400).json({message:error.message})
         }
     })
-    PostRopute.post("/update/:id",auth, async(req,res)=>{
+    PostRopute.patch("/update/:id",auth, async(req,res)=>{
         
-           
+          
+           const userId= req.body.userId
         const {id}=req.params
             try {
               
+                const post=await PostModel.findOne({_id:id})
+                const userid=post.userId
+                if(userId===userid){
+                    await PostModel.findByIdAndUpdate({_id:id},req.body)
+                    res.status(200).json({message:"update success"})
+        
+                }else{
+                    res.status(400).json({message:"Not authorized"})
+                }
                 
-
-                await PostModel.findByIdAndUpdate({_id:id},req.body)
-        
-                res.status(200).json({message:"update success"})
-        
             } catch (error) {
                 res.status(400).json({message:error.message})
             }
         })
 
-        PostRopute.post("/delete/:id",auth, async(req,res)=>{
-            const {id}=req.params
-            
-                try {
-                     await PostModel.findByIdAndDelete({_id:id})
-            
-                    res.status(200).json({message:"delete success"})
-            
-                } catch (error) {
-                    res.status(400).json({message:error.message})
-                }
+        PostRopute.delete("/delete/:id",auth, async(req,res)=>{
+          console.log(req.body)
+            const userId= req.body.userId
+         const {id}=req.params
+             try {
+               
+                 const post=await PostModel.findOne({_id:id})
+                 const userid=post.userId
+                 if(userId===userid){
+                     await PostModel.findByIdAndDelete({_id:id},req.body)
+                     res.status(200).json({message:"delete success"})
+         
+                 }else{
+                    res.status(400).json({message:"Not authorized"})
+                 }
+                 
+             } catch (error) {
+                 res.status(400).json({message:error.message})
+             }
             })
             
         
